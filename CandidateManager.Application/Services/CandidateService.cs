@@ -29,11 +29,13 @@ namespace CandidateManager.Application.Services
             return _mapper.Map<CandidateDto>(candidate);
         }
 
-        public async Task CreateAsync(CandidateDto candidateDto)
+        public async Task<CandidateDto> CreateAsync(CandidateDto candidateDto)
         {
             var candidate = _mapper.Map<Candidate>(candidateDto);
-            await _repository.CreateAsync(candidate);
+            var createdCandidate = await _repository.CreateAsync(candidate);
+            return _mapper.Map<CandidateDto>(createdCandidate);
         }
+
 
         public async Task<bool> UpdateAsync(CandidateDto candidateDto)
         {

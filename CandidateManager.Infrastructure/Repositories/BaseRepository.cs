@@ -25,7 +25,7 @@ public class BaseRepository<TEntity> : IBaseRepository<TEntity> where TEntity : 
         return await _dbSet.FindAsync(id);
     }
 
-    public async Task CreateAsync(TEntity entity)
+    public async Task<TEntity> CreateAsync(TEntity entity)
     {
         if (entity == null)
         {
@@ -34,6 +34,7 @@ public class BaseRepository<TEntity> : IBaseRepository<TEntity> where TEntity : 
 
         await _dbSet.AddAsync(entity);
         await _dbContext.SaveChangesAsync();
+        return entity;
     }
 
     public async Task<bool> UpdateAsync(TEntity entity)
