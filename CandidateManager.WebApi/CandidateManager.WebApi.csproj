@@ -14,4 +14,8 @@
     <Folder Include="Controllers\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\CandidateManager.Infrastructure\CandidateManager.Infrastructure.csproj" />
+  </ItemGroup>
+
 </Project>
