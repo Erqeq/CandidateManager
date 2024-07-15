@@ -1,6 +1,8 @@
 using CandidateManager.Infrastructure.DependencyInjection;
 using CandidateManager.Application.DependencyInjection;
 using System.Reflection;
+using CandidateManager.Infrastructure.Data;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -39,6 +41,20 @@ builder.Services.AddCors(options =>
 
 var app = builder.Build();
 
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    try
+    {
+        var context = services.GetRequiredService<AppDbContext>();
+        context.Database.Migrate();
+    }
+    catch (Exception ex)
+    {
+        throw;
+    }
+}
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
@@ -53,7 +69,5 @@ app.UseHttpsRedirection();
 app.UseRouting();
 app.UseCors("AllowAllOrigins");
 app.UseAuthorization();
-
 app.MapControllers();
-
 app.Run();
