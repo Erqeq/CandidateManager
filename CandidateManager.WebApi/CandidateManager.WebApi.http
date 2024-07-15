@@ -1,0 +1,6 @@
+@CandidateManager.WebApi_HostAddress = http://localhost:5011
+
+GET {{CandidateManager.WebApi_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
