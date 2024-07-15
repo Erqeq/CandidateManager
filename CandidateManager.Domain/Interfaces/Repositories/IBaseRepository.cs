@@ -1,9 +1,10 @@
 ﻿namespace CandidateManager.Domain.Interfaces.Repositories;
 
-public interface IBaseRepository<TEntity>
+public interface IBaseRepository<IEntity>
 {
-    IQueryable<TEntity> GetAll();
-    Task<TEntity> CreateAsync(TEntity entity);
-    Task<TEntity> UpdateAsync(TEntity entity);
-    Task<TEntity> RemoveAsync(TEntity entity);
+    Task<IEnumerable<IEntity>> GetAllAsync();
+    Task<IEntity> GetByIdAsync(int id);
+    Task CreateAsync(IEntity entity);
+    Task<bool> UpdateAsync(IEntity entity);
+    Task<bool> DeleteAsync(int id);
 }
