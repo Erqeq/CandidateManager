@@ -8,6 +8,31 @@ public class CandidateConfiguration : IEntityTypeConfiguration<Candidate>
 {
     public void Configure(EntityTypeBuilder<Candidate> builder)
     {
-        throw new NotImplementedException();
+        builder.HasKey(x => x.Id);
+
+        builder.Property(x => x.FirstName)
+            .IsRequired()
+            .HasMaxLength(200);
+
+        builder.Property(x => x.LastName)
+            .IsRequired()
+            .HasMaxLength(200);
+
+        builder.Property(x => x.PhoneNumber)
+            .IsRequired()
+            .HasMaxLength(30);
+
+        builder.Property(x => x.Email)
+            .IsRequired()
+            .HasMaxLength(200);
+
+        builder.Property(x => x.LinkedInUrl)
+            .HasMaxLength(300);
+
+        builder.Property(x => x.GitHubUrl)
+            .HasMaxLength(300);
+
+        builder.Property(x => x.Comment)
+            .HasMaxLength(1000);
     }
 }
