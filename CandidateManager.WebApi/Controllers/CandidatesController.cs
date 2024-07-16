@@ -1,6 +1,7 @@
 ﻿using CandidateManager.Application.DTOs;
 using CandidateManager.Application.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace CandidateManager.WebApi.Controllers;
 
@@ -9,10 +10,13 @@ namespace CandidateManager.WebApi.Controllers;
 public class CandidatesController : ControllerBase
 {
     private readonly ICandidateService _candidateService;
+    private readonly IMemoryCache _memoryCache;
+    private const string CacheKey = "candidatesList";
 
-    public CandidatesController(ICandidateService candidateService)
+    public CandidatesController(ICandidateService candidateService, IMemoryCache memoryCache)
     {
         _candidateService = candidateService;
+        _memoryCache = memoryCache;
     }
 
     /// <summary>
@@ -23,7 +27,15 @@ public class CandidatesController : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<ActionResult<IEnumerable<CandidateDto>>> GetCandidates()
     {
-        var candidates = await _candidateService.GetAllAsync();
+        if(!_memoryCache.TryGetValue(CacheKey, out IEnumerable<CandidateDto> candidates))
+        {
+            candidates = await _candidateService.GetAllAsync();
+            var cacheEntryOptions = new MemoryCacheEntryOptions()
+                .SetSlidingExpiration(TimeSpan.FromMinutes(5));
+
+            _memoryCache.Set(CacheKey, candidates, cacheEntryOptions);
+
+        }
         return Ok(candidates);
     }
 
@@ -50,10 +62,12 @@ public class CandidatesController : ControllerBase
             if (emailExists)
             {
                 await _candidateService.UpdateAsync(candidateDto);
+                _memoryCache.Remove(CacheKey);
                 return NoContent();
             }
 
             var createdCandidate = await _candidateService.CreateAsync(candidateDto);
+            _memoryCache.Remove(CacheKey);
             return StatusCode(StatusCodes.Status201Created, createdCandidate);
         }
         catch (Exception ex)
@@ -77,6 +91,7 @@ public class CandidatesController : ControllerBase
             return NotFound();
         }
 
+        _memoryCache.Remove(CacheKey);
         return NoContent();
     }
 }
