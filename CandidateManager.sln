@@ -15,7 +15,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{AA04AC7C-707
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{3B936DE4-A06A-445B-9B79-CE6ED3A4EC9F}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CandidateAPI.Tests", "TestProject1\CandidateAPI.Tests.csproj", "{0968A8FA-7D18-4B7B-A9F5-CDBDF2AEE38E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CandidateManager.WebAPi.Tests", "TestProject1\CandidateManager.WebAPi.Tests.csproj", "{0968A8FA-7D18-4B7B-A9F5-CDBDF2AEE38E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
