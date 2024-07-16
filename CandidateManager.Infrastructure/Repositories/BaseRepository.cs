@@ -21,11 +21,6 @@ public class BaseRepository<TEntity> : IBaseRepository<TEntity> where TEntity : 
         return await _dbSet.ToListAsync();
     }
 
-    public async Task<TEntity> GetByIdAsync(int id)
-    {
-        return await _dbSet.FindAsync(id);
-    }
-
     public async Task<TEntity> CreateAsync(TEntity entity)
     {
         if (entity == null)
@@ -49,9 +44,9 @@ public class BaseRepository<TEntity> : IBaseRepository<TEntity> where TEntity : 
         return await _dbContext.SaveChangesAsync() > 0;
     }
 
-    public async Task<bool> DeleteAsync(int id)
+    public async Task<bool> DeleteByEmailAsync(string email)
     {
-        var entity = await _dbSet.FindAsync(id);
+        var entity = await _dbSet.FindAsync(email);
         if (entity == null)
         {
             return false;

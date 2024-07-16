@@ -8,7 +8,7 @@ public class CandidateConfiguration : IEntityTypeConfiguration<Candidate>
 {
     public void Configure(EntityTypeBuilder<Candidate> builder)
     {
-        builder.HasKey(x => x.Id);
+        builder.HasKey(x => x.Email);
 
         builder.Property(x => x.FirstName)
             .IsRequired()

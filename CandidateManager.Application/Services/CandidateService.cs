@@ -23,12 +23,6 @@ namespace CandidateManager.Application.Services
             return _mapper.Map<IEnumerable<CandidateDto>>(candidates);
         }
 
-        public async Task<CandidateDto> GetByIdAsync(int id)
-        {
-            var candidate = await _repository.GetByIdAsync(id);
-            return _mapper.Map<CandidateDto>(candidate);
-        }
-
         public async Task<CandidateDto> CreateAsync(CandidateDto candidateDto)
         {
             var candidate = _mapper.Map<Candidate>(candidateDto);
@@ -36,16 +30,15 @@ namespace CandidateManager.Application.Services
             return _mapper.Map<CandidateDto>(createdCandidate);
         }
 
-
         public async Task<bool> UpdateAsync(CandidateDto candidateDto)
         {
             var candidate = _mapper.Map<Candidate>(candidateDto);
             return await _repository.UpdateAsync(candidate);
         }
 
-        public async Task<bool> DeleteAsync(int id)
+        public async Task<bool> DeleteByEmailAsync(string email)
         {
-            return await _repository.DeleteAsync(id);
+            return await _repository.DeleteByEmailAsync(email);
         }
 
         public async Task<bool> IsEmailRegisteredAsync(string email)

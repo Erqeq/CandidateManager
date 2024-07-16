@@ -1,4 +1,4 @@
-using Moq;
+﻿using Moq;
 using Microsoft.AspNetCore.Mvc;
 using CandidateManager.WebApi.Controllers;
 using CandidateManager.Application.Interfaces;
@@ -21,8 +21,8 @@ public class CandidatesControllerTests
         // Arrange
         var candidates = new List<CandidateDto>
         {
-            new CandidateDto { Id = 1, FirstName = "John", LastName = "Doe" },
-            new CandidateDto { Id = 2, FirstName = "Jane", LastName = "Doe" }
+            new CandidateDto { Email = "test1@test.com", FirstName = "John", LastName = "Doe" },
+            new CandidateDto { Email = "test2@test.com", FirstName = "Jane", LastName = "Doe" }
         };
         _mockCandidateService.Setup(service => service.GetAllAsync())
             .ReturnsAsync(candidates);
@@ -37,41 +37,10 @@ public class CandidatesControllerTests
     }
 
     [Fact]
-    public async Task GetCandidateById_ReturnsOkResult_WithCandidate()
-    {
-        // Arrange
-        var candidate = new CandidateDto { Id = 1, FirstName = "John", LastName = "Doe" };
-        _mockCandidateService.Setup(service => service.GetByIdAsync(1))
-            .ReturnsAsync(candidate);
-
-        // Act
-        var result = await _controller.GetCandidateById(1);
-
-        // Assert
-        var okResult = Assert.IsType<OkObjectResult>(result.Result);
-        var returnCandidate = Assert.IsType<CandidateDto>(okResult.Value);
-        Assert.Equal(1, returnCandidate.Id);
-    }
-
-    [Fact]
-    public async Task GetCandidateById_ReturnsNotFoundResult()
-    {
-        // Arrange
-        _mockCandidateService.Setup(service => service.GetByIdAsync(1))
-            .ReturnsAsync((CandidateDto)null);
-
-        // Act
-        var result = await _controller.GetCandidateById(1);
-
-        // Assert
-        Assert.IsType<NotFoundResult>(result.Result);
-    }
-
-    [Fact]
     public async Task CreateOrUpdateCandidate_ReturnsCreatedAtActionResult_WhenCandidateIsCreated()
     {
         // Arrange
-        var candidate = new CandidateDto { Email = "john@example.com" };
+        var candidate = new CandidateDto { Email = "test1@test.com" };
         _mockCandidateService.Setup(service => service.IsEmailRegisteredAsync(candidate.Email))
             .ReturnsAsync(false);
         _mockCandidateService.Setup(service => service.CreateAsync(candidate))
@@ -81,7 +50,7 @@ public class CandidatesControllerTests
         var result = await _controller.CreateOrUpdateCandidate(candidate);
 
         // Assert
-        var createdAtActionResult = Assert.IsType<CreatedAtActionResult>(result);
+        var createdAtActionResult = Assert.IsType<ObjectResult>(result);
         var returnCandidate = Assert.IsType<CandidateDto>(createdAtActionResult.Value);
         Assert.Equal(candidate.Email, returnCandidate.Email);
     }
@@ -90,7 +59,7 @@ public class CandidatesControllerTests
     public async Task CreateOrUpdateCandidate_ReturnsNoContentResult_WhenCandidateIsUpdated()
     {
         // Arrange
-        var candidate = new CandidateDto { Email = "john@example.com" };
+        var candidate = new CandidateDto { Email = "test1@test.com" };
         _mockCandidateService.Setup(service => service.IsEmailRegisteredAsync(candidate.Email))
             .ReturnsAsync(true);
         _mockCandidateService.Setup(service => service.UpdateAsync(candidate))
@@ -107,11 +76,11 @@ public class CandidatesControllerTests
     public async Task DeleteCandidate_ReturnsNoContentResult_WhenCandidateIsDeleted()
     {
         // Arrange
-        _mockCandidateService.Setup(service => service.DeleteAsync(1))
+        _mockCandidateService.Setup(service => service.DeleteByEmailAsync("test1@test.com"))
             .ReturnsAsync(true);
 
         // Act
-        var result = await _controller.DeleteCandidate(1);
+        var result = await _controller.DeleteCandidate("test1@test.com");
 
         // Assert
         Assert.IsType<NoContentResult>(result);
@@ -121,11 +90,11 @@ public class CandidatesControllerTests
     public async Task DeleteCandidate_ReturnsNotFoundResult_WhenCandidateDoesNotExist()
     {
         // Arrange
-        _mockCandidateService.Setup(service => service.DeleteAsync(1))
+        _mockCandidateService.Setup(service => service.DeleteByEmailAsync("test1@test.com"))
             .ReturnsAsync(false);
 
         // Act
-        var result = await _controller.DeleteCandidate(1);
+        var result = await _controller.DeleteCandidate("test1@test.com");
 
         // Assert
         Assert.IsType<NotFoundResult>(result);

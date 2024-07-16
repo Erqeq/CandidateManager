@@ -15,12 +15,10 @@ namespace CandidateManager.Infrastructure.Migrations
                 name: "Candidates",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Email = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
                     FirstName = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
                     LastName = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
-                    PhoneNumber = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: true),
-                    Email = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
+                    PhoneNumber = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: false),
                     CallTime = table.Column<DateTime>(type: "datetime2", nullable: true),
                     LinkedInUrl = table.Column<string>(type: "nvarchar(300)", maxLength: 300, nullable: false),
                     GitHubUrl = table.Column<string>(type: "nvarchar(300)", maxLength: 300, nullable: false),
@@ -28,7 +26,7 @@ namespace CandidateManager.Infrastructure.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Candidates", x => x.Id);
+                    table.PrimaryKey("PK_Candidates", x => x.Email);
                 });
         }
 

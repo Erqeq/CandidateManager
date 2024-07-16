@@ -28,24 +28,6 @@ public class CandidatesController : ControllerBase
     }
 
     /// <summary>
-    /// Get a candidate by id
-    /// </summary>
-    /// <param name="id">Candidate id</param>
-    /// <returns>Candidate detail</returns>
-    [HttpGet("{id}", Name = "GetCandidateById")]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<CandidateDto>> GetCandidateById(int id)
-    {
-        var candidate = await _candidateService.GetByIdAsync(id);
-        if (candidate is null)
-        {
-            return NotFound();
-        }
-        return Ok(candidate);
-    }
-
-    /// <summary>
     /// Create or update a candidate
     /// </summary>
     /// <param name="candidateDto">Candidate data</param>
@@ -72,7 +54,7 @@ public class CandidatesController : ControllerBase
             }
 
             var createdCandidate = await _candidateService.CreateAsync(candidateDto);
-            return CreatedAtAction(nameof(GetCandidateById), new { id = createdCandidate.Id }, createdCandidate);
+            return StatusCode(StatusCodes.Status201Created, createdCandidate);
         }
         catch (Exception ex)
         {
@@ -81,15 +63,15 @@ public class CandidatesController : ControllerBase
     }
 
     /// <summary>
-    /// Delete a candidate by id
+    /// Delete a candidate by email
     /// </summary>
-    /// <param name="id">Candidate Id</param>
-    [HttpDelete("{id}", Name = "DeleteCandidate")]
+    /// <param name="id">Candidate email</param>
+    [HttpDelete("{email}", Name = "DeleteCandidate")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> DeleteCandidate(int id)
+    public async Task<IActionResult> DeleteCandidate(string email)
     {
-        var deletedCandidate = await _candidateService.DeleteAsync(id);
+        var deletedCandidate = await _candidateService.DeleteByEmailAsync(email);
         if (!deletedCandidate)
         {
             return NotFound();
