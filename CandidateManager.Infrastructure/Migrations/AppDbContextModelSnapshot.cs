@@ -64,7 +64,6 @@ namespace CandidateManager.Infrastructure.Migrations
                         .HasColumnType("nvarchar(300)");
 
                     b.Property<string>("PhoneNumber")
-                        .IsRequired()
                         .HasMaxLength(30)
                         .HasColumnType("nvarchar(30)");
 

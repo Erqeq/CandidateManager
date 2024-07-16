@@ -1,4 +1,5 @@
-﻿using CandidateManager.Domain.Interfaces.Repositories;
+﻿using System.Linq.Expressions;
+using CandidateManager.Domain.Interfaces.Repositories;
 using CandidateManager.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 
@@ -58,5 +59,10 @@ public class BaseRepository<TEntity> : IBaseRepository<TEntity> where TEntity : 
 
         _dbSet.Remove(entity);
         return await _dbContext.SaveChangesAsync() > 0;
+    }
+
+    public async Task<TEntity?> FindAsync(Expression<Func<TEntity, bool>> predicate)
+    {
+        return await _dbSet.FirstOrDefaultAsync(predicate);
     }
 }

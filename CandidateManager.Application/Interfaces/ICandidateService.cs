@@ -9,4 +9,5 @@ public interface ICandidateService
     Task<CandidateDto> CreateAsync(CandidateDto entity);
     Task<bool> UpdateAsync(CandidateDto entity);
     Task<bool> DeleteAsync(int id);
+    Task<bool> IsEmailRegisteredAsync(string email);
 }

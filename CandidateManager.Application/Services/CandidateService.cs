@@ -47,5 +47,11 @@ namespace CandidateManager.Application.Services
         {
             return await _repository.DeleteAsync(id);
         }
+
+        public async Task<bool> IsEmailRegisteredAsync(string email)
+        {
+            var candidateEmail = await _repository.FindAsync(c => c.Email == email);
+            return candidateEmail != null;
+        }
     }
 }

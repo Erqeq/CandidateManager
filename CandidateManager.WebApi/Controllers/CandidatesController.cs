@@ -46,52 +46,38 @@ public class CandidatesController : ControllerBase
     }
 
     /// <summary>
-    /// Create a new candidate
+    /// Create or update a candidate
     /// </summary>
     /// <param name="candidateDto">Candidate data</param>
-    /// <returns>Created candidate</returns>
-    [HttpPost(Name = "CreateCandidate")]
+    /// <returns>Created or updated candidate</returns>
+    [HttpPost(Name = "CreateOrUpdateCandidate")]
     [ProducesResponseType(StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<ActionResult<CandidateDto>> CreateCandidate(CandidateDto candidateDto)
+    public async Task<IActionResult> CreateOrUpdateCandidate([FromBody] CandidateDto candidateDto)
     {
+        if (candidateDto == null)
+        {
+            return BadRequest("Candidate data is null");
+        }
+
         try
         {
-            var createdCandidate = await _candidateService.CreateAsync(candidateDto);
+            var emailExists  = await _candidateService.IsEmailRegisteredAsync(candidateDto.Email);
 
-            return CreatedAtAction(nameof(GetCandidateById),
-                new { id = createdCandidate.Id }, createdCandidate);
+            if (emailExists)
+            {
+                await _candidateService.UpdateAsync(candidateDto);
+                return NoContent();
+            }
+
+            var createdCandidate = await _candidateService.CreateAsync(candidateDto);
+            return CreatedAtAction(nameof(GetCandidateById), new { id = createdCandidate.Id }, createdCandidate);
         }
-        catch (ArgumentNullException ex)
+        catch (Exception ex)
         {
             return BadRequest(ex.Message);
         }
-    }
-
-    /// <summary>
-    /// Update a candidate
-    /// </summary>
-    /// <param name="id">Candidate Id</param>
-    /// <param name="candidateDto">Options of a candidate</param>
-    /// <returns></returns>
-    [HttpPut("{id}", Name = "UpdateCandidate")]
-    [ProducesResponseType(StatusCodes.Status204NoContent)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> UpdateCandidate(int id, [FromBody] CandidateDto candidateDto)
-    {
-        if (id != candidateDto.Id)
-        {
-            return BadRequest();
-        }
-
-        var updatedCandidate = await _candidateService.UpdateAsync(candidateDto);
-        if (!updatedCandidate)
-        {
-            return NotFound();
-        }
-
-        return NoContent();
     }
 
     /// <summary>
